@@ -1,0 +1,245 @@
+{
+  "resourceType": "Questionnaire",
+  "name": "CardiologyReferralForm",
+  "title": "Cardiology Referral Form",
+  "status": "active",
+  "version": "1.0.0",
+  "date": "2026-05-26",
+  "publisher": "Cardiology Referral Registry",
+  "description": "Standardized cardiology referral intake form. Captures patient demographics, referral context, and cardiovascular risk screening for downstream specialist review.",
+  "url": "http://example.org/fhir/Questionnaire/cardiology-referral-v1",
+  "identifier": [
+    {
+      "system": "http://example.org/fhir/identifiers/questionnaire",
+      "value": "CARDIO-REF-001"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        }
+      ]
+    }
+  ],
+  "item": [
+    {
+      "linkId": "patient-info",
+      "text": "Patient Information",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "patient-id",
+          "text": "Patient ID",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.id.first()"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "patient-name",
+          "text": "Full Name",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.name.first().given.first() + ' ' + %patient.name.first().family"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "patient-age",
+          "text": "Age (years)",
+          "type": "integer",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "(today() - %patient.birthDate).value.toInteger() div 365"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "referral-details",
+      "text": "Referral Details",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "department",
+          "text": "Referring to Department",
+          "type": "choice",
+          "required": true,
+          "answerOption": [
+            { "valueCoding": { "code": "adult-cardio",  "display": "Adult Cardiology" } },
+            { "valueCoding": { "code": "ped-cardio",    "display": "Pediatric Cardiology" } },
+            { "valueCoding": { "code": "cardio-surg",   "display": "Cardiac Surgery" } },
+            { "valueCoding": { "code": "electrophys",   "display": "Electrophysiology" } }
+          ]
+        },
+        {
+          "linkId": "reason",
+          "text": "Reason for Referral",
+          "type": "text",
+          "required": true
+        },
+        {
+          "linkId": "urgency",
+          "text": "Urgency",
+          "type": "choice",
+          "required": true,
+          "answerOption": [
+            { "valueCoding": { "code": "routine", "display": "Routine" } },
+            { "valueCoding": { "code": "urgent",  "display": "Urgent"  } },
+            { "valueCoding": { "code": "stat",    "display": "STAT (within 24h)" } }
+          ]
+        },
+        {
+          "linkId": "urgency-reason",
+          "text": "Clinical justification for urgency",
+          "type": "text",
+          "required": true,
+          "enableWhen": [
+            {
+              "question": "urgency",
+              "operator": "=",
+              "answerCoding": { "code": "urgent" }
+            },
+            {
+              "question": "urgency",
+              "operator": "=",
+              "answerCoding": { "code": "stat" }
+            }
+          ],
+          "enableBehavior": "any"
+        }
+      ]
+    },
+    {
+      "linkId": "risk-screening",
+      "text": "Cardiovascular Risk Screening",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "risk-smoker",
+          "text": "Current or former smoker?",
+          "type": "boolean"
+        },
+        {
+          "linkId": "risk-diabetes",
+          "text": "Known diabetes mellitus?",
+          "type": "boolean"
+        },
+        {
+          "linkId": "risk-hypertension",
+          "text": "Known hypertension?",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "linkId": "risk-score",
+      "text": "CVD Risk Score (0-3)",
+      "type": "integer",
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "iif(%resource.item.descendants().where(linkId='risk-smoker').answer.value.exists() and %resource.item.descendants().where(linkId='risk-smoker').answer.value.first()=true, 1, 0) + iif(%resource.item.descendants().where(linkId='risk-diabetes').answer.value.exists() and %resource.item.descendants().where(linkId='risk-diabetes').answer.value.first()=true, 1, 0) + iif(%resource.item.descendants().where(linkId='risk-hypertension').answer.value.exists() and %resource.item.descendants().where(linkId='risk-hypertension').answer.value.first()=true, 1, 0)"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "risk-low",
+      "text": "Low cardiovascular risk profile. Proceed with routine workup.",
+      "type": "display",
+      "enableWhen": [
+        {
+          "question": "risk-score",
+          "operator": "<=",
+          "answerInteger": 1
+        }
+      ]
+    },
+    {
+      "linkId": "risk-high",
+      "text": "Elevated cardiovascular risk (score >= 2). Recommend early specialist review and baseline ECG/lipid panel prior to consult.",
+      "type": "display",
+      "enableWhen": [
+        {
+          "question": "risk-score",
+          "operator": ">=",
+          "answerInteger": 2
+        }
+      ]
+    }
+  ],
+  "contained": [
+    {
+      "resourceType": "Bundle",
+      "id": "referral-extract",
+      "type": "transaction",
+      "entry": [
+        {
+          "request": {
+            "method": "POST",
+            "url": "ServiceRequest"
+          },
+          "resource": {
+            "resourceType": "ServiceRequest",
+            "status": "active",
+            "intent": "order",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "306181000",
+                    "display": "Cardiology referral"
+                  }
+                ]
+              }
+            ],
+            "subject": {
+              "reference": "Patient/{{%patient.id}}"
+            },
+            "note": [
+              {
+                "text": "{{%resource.item.descendants().where(linkId='reason').answer.value.first()}}"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
