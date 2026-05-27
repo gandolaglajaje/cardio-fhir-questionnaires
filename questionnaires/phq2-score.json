@@ -68,10 +68,10 @@
         }
       ],
       "answerOption": [
-        { "valueCoding": { "system": "http://loinc.org", "code": "LA6568-5", "display": "Not at all" },           "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0 }] },
-        { "valueCoding": { "system": "http://loinc.org", "code": "LA6569-3", "display": "Several days" },        "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 1 }] },
-        { "valueCoding": { "system": "http://loinc.org", "code": "LA6570-1", "display": "More than half the days" }, "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 2 }] },
-        { "valueCoding": { "system": "http://loinc.org", "code": "LA6571-9", "display": "Nearly every day" },    "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 3 }] }
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6568-5", "display": "Not at all" } },
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6569-3", "display": "Several days" } },
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6570-1", "display": "More than half the days" } },
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6571-9", "display": "Nearly every day" } }
       ]
     },
     {
@@ -87,10 +87,10 @@
         }
       ],
       "answerOption": [
-        { "valueCoding": { "system": "http://loinc.org", "code": "LA6568-5", "display": "Not at all" },           "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0 }] },
-        { "valueCoding": { "system": "http://loinc.org", "code": "LA6569-3", "display": "Several days" },        "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 1 }] },
-        { "valueCoding": { "system": "http://loinc.org", "code": "LA6570-1", "display": "More than half the days" }, "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 2 }] },
-        { "valueCoding": { "system": "http://loinc.org", "code": "LA6571-9", "display": "Nearly every day" },    "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 3 }] }
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6568-5", "display": "Not at all" } },
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6569-3", "display": "Several days" } },
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6570-1", "display": "More than half the days" } },
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6571-9", "display": "Nearly every day" } }
       ]
     },
     {
@@ -110,7 +110,7 @@
           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
           "valueExpression": {
             "language": "text/fhirpath",
-            "expression": "iif(%resource.item.where(linkId='phq2-q1').answer.value.extension('http://hl7.org/fhir/StructureDefinition/ordinalValue').value.exists(), %resource.item.where(linkId='phq2-q1').answer.value.extension('http://hl7.org/fhir/StructureDefinition/ordinalValue').value.first(), 0) + iif(%resource.item.where(linkId='phq2-q2').answer.value.extension('http://hl7.org/fhir/StructureDefinition/ordinalValue').value.exists(), %resource.item.where(linkId='phq2-q2').answer.value.extension('http://hl7.org/fhir/StructureDefinition/ordinalValue').value.first(), 0)"
+            "expression": "iif(%resource.item.where(linkId='phq2-q1').answer.valueCoding.code='LA6568-5', 0, iif(%resource.item.where(linkId='phq2-q1').answer.valueCoding.code='LA6569-3', 1, iif(%resource.item.where(linkId='phq2-q1').answer.valueCoding.code='LA6570-1', 2, iif(%resource.item.where(linkId='phq2-q1').answer.valueCoding.code='LA6571-9', 3, 0)))) + iif(%resource.item.where(linkId='phq2-q2').answer.valueCoding.code='LA6568-5', 0, iif(%resource.item.where(linkId='phq2-q2').answer.valueCoding.code='LA6569-3', 1, iif(%resource.item.where(linkId='phq2-q2').answer.valueCoding.code='LA6570-1', 2, iif(%resource.item.where(linkId='phq2-q2').answer.valueCoding.code='LA6571-9', 3, 0))))"
           }
         }
       ]
