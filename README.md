@@ -8,7 +8,7 @@ Built as part of the SSCP FHIR SDC Training (NTHC NIH UP Manila, May 2026).
 
 | Form | File | Description |
 |------|------|-------------|
-| Cardiology Referral | [`cardiology-referral.json`](./cardiology-referral.json) | Standardized intake form for cardiology referrals with CVD risk screening |
+| Cardiology Referral | [`cardiology-referral.json`](./questionnaires/cardiology-referral.json) | Standardized intake form for cardiology referrals with CVD risk screening |
 
 ## Features
 
