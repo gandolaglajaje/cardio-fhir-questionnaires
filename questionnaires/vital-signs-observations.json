@@ -1,0 +1,233 @@
+{
+  "resourceType": "Questionnaire",
+  "name": "VitalSignsObservations",
+  "title": "Vital Signs - Observation Extraction",
+  "status": "active",
+  "version": "1.0.0",
+  "date": "2026-05-26",
+  "publisher": "FHIR SDC Training",
+  "description": "Captures basic vital signs for a patient. Uses template-based extraction (itemExtractionContext) to generate one Observation resource per vital sign, all linked to the patient from launch context.",
+  "url": "http://example.org/fhir/Questionnaire/vital-signs-observations-v1",
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        }
+      ]
+    }
+  ],
+  "item": [
+    {
+      "linkId": "patient-id",
+      "text": "Patient ID",
+      "type": "string",
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "%patient.id.first()"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "patient-name",
+      "text": "Patient Name",
+      "type": "string",
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "%patient.name.first().given.first() + ' ' + %patient.name.first().family"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "body-weight",
+      "text": "Body Weight (kg)",
+      "type": "decimal",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemExtractionContext",
+          "valueExpression": {
+            "language": "application/x-fhir-query",
+            "expression": "Observation?code=29463-7&patient={{%patient.id}}"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "body-height",
+      "text": "Body Height (cm)",
+      "type": "decimal",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemExtractionContext",
+          "valueExpression": {
+            "language": "application/x-fhir-query",
+            "expression": "Observation?code=8302-2&patient={{%patient.id}}"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "heart-rate",
+      "text": "Heart Rate (bpm)",
+      "type": "integer",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemExtractionContext",
+          "valueExpression": {
+            "language": "application/x-fhir-query",
+            "expression": "Observation?code=8867-4&patient={{%patient.id}}"
+          }
+        }
+      ]
+    }
+  ],
+  "contained": [
+    {
+      "resourceType": "Bundle",
+      "id": "observations-extract",
+      "type": "transaction",
+      "entry": [
+        {
+          "request": {
+            "method": "POST",
+            "url": "Observation"
+          },
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "vital-signs",
+                    "display": "Vital Signs"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "29463-7",
+                  "display": "Body weight"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "Patient/{{%patient.id}}"
+            },
+            "effectiveDateTime": "{{now()}}",
+            "valueQuantity": {
+              "value": "{{%resource.item.where(linkId='body-weight').answer.value.first()}}",
+              "unit": "kg",
+              "system": "http://unitsofmeasure.org",
+              "code": "kg"
+            }
+          }
+        },
+        {
+          "request": {
+            "method": "POST",
+            "url": "Observation"
+          },
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "vital-signs",
+                    "display": "Vital Signs"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8302-2",
+                  "display": "Body height"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "Patient/{{%patient.id}}"
+            },
+            "effectiveDateTime": "{{now()}}",
+            "valueQuantity": {
+              "value": "{{%resource.item.where(linkId='body-height').answer.value.first()}}",
+              "unit": "cm",
+              "system": "http://unitsofmeasure.org",
+              "code": "cm"
+            }
+          }
+        },
+        {
+          "request": {
+            "method": "POST",
+            "url": "Observation"
+          },
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "vital-signs",
+                    "display": "Vital Signs"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8867-4",
+                  "display": "Heart rate"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "Patient/{{%patient.id}}"
+            },
+            "effectiveDateTime": "{{now()}}",
+            "valueQuantity": {
+              "value": "{{%resource.item.where(linkId='heart-rate').answer.value.first()}}",
+              "unit": "/min",
+              "system": "http://unitsofmeasure.org",
+              "code": "/min"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
