@@ -1,0 +1,308 @@
+{
+  "resourceType": "Questionnaire",
+  "name": "PatientPrepopulationForm",
+  "title": "Patient Demographics Form",
+  "status": "active",
+  "version": "1.0.0",
+  "date": "2026-05-26",
+  "publisher": "FHIR SDC Training",
+  "description": "Patient demographics form prepopulated from the Patient resource provided as launch context. Demonstrates initialExpression-based prepopulation and a repeating group for telecom entries.",
+  "url": "http://example.org/fhir/Questionnaire/patient-prepopulation-v1",
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        }
+      ]
+    }
+  ],
+  "item": [
+    {
+      "linkId": "identity",
+      "text": "Identity",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "patient-id",
+          "text": "Patient ID",
+          "type": "string",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.id.first()"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "identifier",
+          "text": "MRN / Identifier",
+          "type": "string",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.identifier.value.first()"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "active",
+          "text": "Active patient record?",
+          "type": "boolean",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.active"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "name-group",
+      "text": "Name",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "given-name",
+          "text": "Given Name",
+          "type": "string",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.name.first().given.first()"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "family-name",
+          "text": "Family Name",
+          "type": "string",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.name.first().family"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "demographics",
+      "text": "Demographics",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "gender",
+          "text": "Gender",
+          "type": "choice",
+          "answerOption": [
+            { "valueCoding": { "code": "male",    "display": "Male" } },
+            { "valueCoding": { "code": "female",  "display": "Female" } },
+            { "valueCoding": { "code": "other",   "display": "Other" } },
+            { "valueCoding": { "code": "unknown", "display": "Unknown" } }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.gender"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "birth-date",
+          "text": "Date of Birth",
+          "type": "date",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.birthDate"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "marital-status",
+          "text": "Marital Status",
+          "type": "string",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.maritalStatus.coding.first().display"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "address-group",
+      "text": "Address",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "address-line",
+          "text": "Street Address",
+          "type": "string",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.address.first().line.first()"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "address-city",
+          "text": "City",
+          "type": "string",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.address.first().city"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "address-postal",
+          "text": "Postal Code",
+          "type": "string",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.address.first().postalCode"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "address-country",
+          "text": "Country",
+          "type": "string",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.address.first().country"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "telecom-group",
+      "text": "Contact Methods",
+      "type": "group",
+      "repeats": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemPopulationContext",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "%patient.telecom",
+            "name": "telecomItem"
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "telecom-system",
+          "text": "System",
+          "type": "choice",
+          "answerOption": [
+            { "valueCoding": { "code": "phone", "display": "Phone" } },
+            { "valueCoding": { "code": "email", "display": "Email" } },
+            { "valueCoding": { "code": "fax",   "display": "Fax"   } },
+            { "valueCoding": { "code": "sms",   "display": "SMS"   } },
+            { "valueCoding": { "code": "other", "display": "Other" } }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%telecomItem.system"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "telecom-value",
+          "text": "Value",
+          "type": "string",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%telecomItem.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "telecom-use",
+          "text": "Use",
+          "type": "choice",
+          "answerOption": [
+            { "valueCoding": { "code": "home",   "display": "Home" } },
+            { "valueCoding": { "code": "work",   "display": "Work" } },
+            { "valueCoding": { "code": "mobile", "display": "Mobile" } },
+            { "valueCoding": { "code": "temp",   "display": "Temporary" } },
+            { "valueCoding": { "code": "old",    "display": "Old" } }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%telecomItem.use"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
