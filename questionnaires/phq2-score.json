@@ -1,0 +1,143 @@
+{
+  "resourceType": "Questionnaire",
+  "name": "PHQ2DepressionScreening",
+  "title": "PHQ-2 Depression Screening",
+  "status": "active",
+  "version": "1.0.0",
+  "date": "2026-05-26",
+  "publisher": "FHIR SDC Training",
+  "description": "Patient Health Questionnaire-2 (PHQ-2) — a brief 2-item depression screening tool. Over the last 2 weeks, how often has the patient been bothered by the following problems? Total score 0-6; score >= 3 indicates a positive screen and warrants follow-up with the full PHQ-9.",
+  "url": "http://example.org/fhir/Questionnaire/phq2-depression-screening-v1",
+  "subjectType": ["Patient"],
+  "code": [
+    {
+      "system": "http://loinc.org",
+      "code": "55757-9",
+      "display": "Patient Health Questionnaire 2 item (PHQ-2) [Reporting]"
+    }
+  ],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        }
+      ]
+    }
+  ],
+  "item": [
+    {
+      "linkId": "patient-name",
+      "text": "Patient Name",
+      "type": "string",
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "%patient.name.first().given.first() + ' ' + %patient.name.first().family"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "instructions",
+      "text": "Over the last 2 weeks, how often have you been bothered by any of the following problems?",
+      "type": "display"
+    },
+    {
+      "linkId": "phq2-q1",
+      "text": "1. Little interest or pleasure in doing things",
+      "type": "choice",
+      "required": true,
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "44250-9",
+          "display": "Little interest or pleasure in doing things in last 2 weeks"
+        }
+      ],
+      "answerOption": [
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6568-5", "display": "Not at all" },           "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0 }] },
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6569-3", "display": "Several days" },        "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 1 }] },
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6570-1", "display": "More than half the days" }, "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 2 }] },
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6571-9", "display": "Nearly every day" },    "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 3 }] }
+      ]
+    },
+    {
+      "linkId": "phq2-q2",
+      "text": "2. Feeling down, depressed, or hopeless",
+      "type": "choice",
+      "required": true,
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "44255-8",
+          "display": "Feeling down, depressed, or hopeless in last 2 weeks"
+        }
+      ],
+      "answerOption": [
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6568-5", "display": "Not at all" },           "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0 }] },
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6569-3", "display": "Several days" },        "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 1 }] },
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6570-1", "display": "More than half the days" }, "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 2 }] },
+        { "valueCoding": { "system": "http://loinc.org", "code": "LA6571-9", "display": "Nearly every day" },    "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 3 }] }
+      ]
+    },
+    {
+      "linkId": "phq2-total",
+      "text": "PHQ-2 Total Score (0-6)",
+      "type": "integer",
+      "readOnly": true,
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "55758-7",
+          "display": "Patient Health Questionnaire 2 item (PHQ-2) total score [Reported]"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "iif(%resource.item.where(linkId='phq2-q1').answer.value.extension('http://hl7.org/fhir/StructureDefinition/ordinalValue').value.exists(), %resource.item.where(linkId='phq2-q1').answer.value.extension('http://hl7.org/fhir/StructureDefinition/ordinalValue').value.first(), 0) + iif(%resource.item.where(linkId='phq2-q2').answer.value.extension('http://hl7.org/fhir/StructureDefinition/ordinalValue').value.exists(), %resource.item.where(linkId='phq2-q2').answer.value.extension('http://hl7.org/fhir/StructureDefinition/ordinalValue').value.first(), 0)"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "result-negative",
+      "text": "Negative screen (score < 3). No further action required based on PHQ-2 alone.",
+      "type": "display",
+      "enableWhen": [
+        {
+          "question": "phq2-total",
+          "operator": "<",
+          "answerInteger": 3
+        }
+      ]
+    },
+    {
+      "linkId": "result-positive",
+      "text": "Positive screen (score >= 3). Recommend administering the full PHQ-9 and considering further clinical assessment.",
+      "type": "display",
+      "enableWhen": [
+        {
+          "question": "phq2-total",
+          "operator": ">=",
+          "answerInteger": 3
+        }
+      ]
+    }
+  ]
+}
